@@ -12,7 +12,7 @@ import './styles.css';
  */
 const configFiles = {
     'prod': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs.json?sheet=prod',
-    'stage': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-stage.json',
+    'stage': 'https://main--eds-commerce--rajthillai.aem.live/configs-stage.json',
     'dev': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-dev.json',
 }
 /**
