@@ -7,22 +7,16 @@ import getProductsInCategory from './queries/products.graphql.js';
 
 import './styles.css';
 
-/**
- * Object containing all configuration files that should be exposed in the picker.
- */
-const configFiles = {
-    'prod': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs.json?sheet=prod',
-    'stage': 'https://main--eds-commerce--rajthillai.aem.live/configs-stage.json',
-    'dev': 'https://main--aem-boilerplate-commerce--hlxsites.hlx.live/configs-dev.json',
-}
-/**
- * Default configuration to be loaded.
- */
+let configFile = `${window.location.origin}/configs.json`;
+console.log(window.location.origin,"location");
 const defaultConfig = 'prod';
 
+if(window.location.href=="http://localhost:1234/"){
+    configFile='http://localhost:6002/configs.json';
+}
 /**
  * List of blocks to be available in the picker.
- *
+ * 
  * Format: Object with key -> block mapping. Each block is defined by the following properties:
  *   key: Unique key, must be same as the key in the object
  *   name: Displayed name of the block
@@ -112,19 +106,45 @@ const blocks = {
         'selection': 'multiple',
         'type': 'folder',
     },
+    'offer-listing': {
+        'key': 'offer-listing',
+        'name': 'Offer Listing',
+        'output': items => `<table width="100%" style="border: 1px solid black;">
+            <tr>
+                <th style="border: 1px solid black; background: lightgray;">Algolia product listing (offer listing)</th>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black">
+                    <ul>
+                        ${items.map(i => `<li>${i?.sku}</li>`).join('')}
+                    </ul>
+                </td>
+            </tr>
+        </table>`,
+        'selection': 'multiple',
+        'type': 'item',
+        'item':'only'
+    },
+    'offer-listing-products': {
+        'key': 'offer-listing-products',
+        'name': 'Offer Listing products',
+        'output': items => `<ul>${items.map(i => `<li>${i?.sku}</li>`).join('')}</ul>`,
+        'selection': 'multiple',
+        'type': 'item',
+        'item':'only'
+    }
 };
 
 async function performCatalogServiceQuery(query, config, variables) {
     const headers = {
+        'Magento-Environment-Id': config['commerce-environment-id'],
+        'Magento-Store-View-Code': config['commerce-store-view-code'],
+        'Magento-Website-Code': config['commerce-website-code'],
+        'x-api-key': config['commerce-x-api-key'],
+        'Magento-Store-Code': config['commerce-store-code'],
+        'Magento-Customer-Group': config['commerce-customer-group'],
         'Content-Type': 'application/json',
-        'x-api-key': config['commerce.headers.cs.x-api-key'],
-        'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
-        'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
-        'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
-        'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
-        'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
     };
-
     const apiCall = new URL(config['commerce-endpoint']);
     apiCall.searchParams.append('query', query.replace(/(?:\r\n|\r|\n|\t|[\s]{4})/g, ' ')
         .replace(/\s\s+/g, ' '));
@@ -183,7 +203,6 @@ const getCategories = async (folderKey, config) => {
     } catch (err) {
         console.error('Could not retrieve categories', err);
     }
-
     return categoryObject;
 }
 
@@ -193,6 +212,6 @@ if (app) {
         blocks={blocks}
         getCategories={getCategories}
         getItems={getItems}
-        configFiles={configFiles}
+        configFile={configFile}
         defaultConfig={defaultConfig} />, app);
 }
