@@ -137,12 +137,12 @@ const blocks = {
 
 async function performCatalogServiceQuery(query, config, variables) {
     const headers = {
-        'Magento-Environment-Id': config['commerce-environment-id'],
-        'Magento-Store-View-Code': config['commerce-store-view-code'],
-        'Magento-Website-Code': config['commerce-website-code'],
-        'x-api-key': config['commerce-x-api-key'],
-        'Magento-Store-Code': config['commerce-store-code'],
-        'Magento-Customer-Group': config['commerce-customer-group'],
+        'Magento-Environment-Id': config['commerce.headers.cs.Magento-Environment-Id'],
+        'Magento-Store-View-Code': config['commerce.headers.cs.Magento-Store-View-Code'],
+        'Magento-Website-Code': config['commerce.headers.cs.Magento-Website-Code'],
+        'x-api-key': config['commerce.headers.cs.x-api-key'],
+        'Magento-Store-Code': config['commerce.headers.cs.Magento-Store-Code'],
+        'Magento-Customer-Group': config['commerce.headers.cs.Magento-Customer-Group'],
         'Content-Type': 'application/json',
     };
     const apiCall = new URL(config['commerce-endpoint']);
